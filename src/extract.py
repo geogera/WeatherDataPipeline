@@ -1,4 +1,3 @@
-
 from datetime import datetime
 import json
 
@@ -18,6 +17,7 @@ BASE_URL = "https://api.open-meteo.com/v1/forecast"
 
 
 def fetch_weather_data(city_coords)-> dict:
+    # fetch weather data from open-meteo API
     params={
         "latitude": city_coords["lat"],
         "longitude": city_coords["long"],
@@ -29,7 +29,7 @@ def fetch_weather_data(city_coords)-> dict:
     return response.json()
 
 def save_raw_data(city_key: str, data: dict,date: datetime) -> None:
-    
+    # save weather data to raw json file
     base_path = Path("data/raw/weather") / date.strftime("%Y/%m/%d")
     base_path.mkdir(parents=True, exist_ok=True)
 
@@ -41,19 +41,22 @@ def save_raw_data(city_key: str, data: dict,date: datetime) -> None:
 
 
 def extract_weather(run_date=None):
+    # extract weather data for all cities for a given date
     if isinstance(run_date, str):
         run_date = datetime.strptime(run_date, "%Y-%m-%d")  # convert string to datetime
     if run_date is None:
         run_date = datetime.utcnow()
 
     for city_key,city_coords in CITIES.items():
-        try:
+        try:  # handle any errors that may occur
             print(f"Processing for date: {run_date} and city: {city_key}")
-            weather_data=fetch_weather_data(city_coords=city_coords)
-            save_raw_data(city_key=city_key,data=weather_data,date=run_date)
-            print("Data were saved successfully for city: "+city_key)
-        except Exception as e:
+            weather_data = fetch_weather_data(city_coords=city_coords)  # fetch weather data from open-meteo API
+            save_raw_data(city_key=city_key, data=weather_data, date=run_date)  # save weather data to raw json file
+            print("Data were saved successfully for city: " + city_key)
+        except Exception as e:  # handle any errors that may occur
             print(f"Failed for {city_key}: {e}")
+            # Re-raise so Airflow marks the task as failed and can retry
+            raise
 
-if __name__ == "__main__":
+if __name__ == "__main__": # main function to extract weather data for all cities for a given date
     extract_weather()

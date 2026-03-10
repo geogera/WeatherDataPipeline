@@ -14,10 +14,12 @@ def transform_data(base_path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
       dim_df  - one row per city (for dim_city)
       fact_df - one row per city per day (for fact_weather_daily)
     """
+    print(f"[Transform] Starting for path: {base_path}")
     dim_parts = []
     fact_parts = []
 
     for file_path in base_path.glob("*.json"):
+        print(f"[Transform] Processing: {file_path.name}")
         with open(file_path, encoding="utf-8") as f:
             data = json.load(f)
 
@@ -68,6 +70,7 @@ def transform_data(base_path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
             pd.DataFrame(
                 [
                     {
+                        "city_key": city_key,
                         "city_name": city_name,
                         "latitude": data["latitude"],
                         "longitude": data["longitude"],
@@ -82,6 +85,7 @@ def transform_data(base_path: Path) -> Tuple[pd.DataFrame, pd.DataFrame]:
     dim_df = pd.concat(dim_parts, ignore_index=True) if dim_parts else pd.DataFrame()
     fact_df = pd.concat(fact_parts, ignore_index=True) if fact_parts else pd.DataFrame()
 
+    print(f"[Transform] Done. dim_city rows: {len(dim_df)}, fact_weather_daily rows: {len(fact_df)}")
     return dim_df, fact_df
 
 
