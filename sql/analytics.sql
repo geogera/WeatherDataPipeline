@@ -1,6 +1,3 @@
--- Day 12: Analytics queries (PostgreSQL)
--- Run against the airflow DB after pipeline has loaded data.
-
 -- 1. Avg temp per city (one row per city, overall average daily temp)
 SELECT
     dc.city_name,
