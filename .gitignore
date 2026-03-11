@@ -1,3 +1,5 @@
 logs/
 .env
 __pycache__/
+Daily_tasks.md
+START_AIRFLOW.md
