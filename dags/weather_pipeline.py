@@ -71,7 +71,7 @@ with DAG(
     tags=["weather", "data-engineering"],
 ) as dag:
 
-    # Day 11: only run extract/transform/load if this date not already processed
+    # only run extract/transform/load if this date not already processed
     check_task = ShortCircuitOperator(
         task_id="check_incremental",
         python_callable=should_run_for_date,
