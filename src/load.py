@@ -26,8 +26,14 @@ def is_date_processed(run_date: str, host: str = None) -> bool:
                 (run_date,),
             )
             return cur.fetchone() is not None
+    except psycopg2.ProgrammingError as e:
+        # Table does not exist yet (schema not run); treat as not processed so pipeline runs
+        if e.pgcode == "42P01":  # undefined_table
+            return False
+        raise
     finally:
         conn.close()
+
 
 
 def record_run_success(run_date: str, host: str = None) -> None:
