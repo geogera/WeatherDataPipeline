@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS fact_weather_daily (
 CREATE INDEX IF NOT EXISTS idx_fact_weather_daily_city ON fact_weather_daily(city_key);
 CREATE INDEX IF NOT EXISTS idx_fact_weather_daily_date ON fact_weather_daily(date);
 
--- Day 11: incremental processing — which dates have been fully loaded
+--  incremental processing — which dates have been fully loaded
 CREATE TABLE IF NOT EXISTS pipeline_run_state (
     run_date     DATE PRIMARY KEY,
     completed_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
